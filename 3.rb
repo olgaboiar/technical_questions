@@ -1,34 +1,28 @@
-amount = 4
-denominations = [1,2,3]
 def changePossibilities(amount,denominations)
     possibilities = 0
-    denominations = denominations.sort
-    denominations = denominations.reverse
-    puts denominations.join("")
-    if amount == 0
-        possibilities  = 1
-    elsif amount < 0
-        possibilities = 0
-    else
-        i = 0
-        while i <= amount
-            n = 1
-            while denominations[i].to_i * n <= amount
-                if denominations[i].to_i * n == amount
-                    possibilities += 1
-                else
-                    remaining = amount - denominations[i].to_i * n
-                    puts "remaining is " + remaining.to_s
-                    rest_denominations = denominations[i+1..denominations.length - 1]
-                    puts "rest of denomin " + rest_denominations.to_s
-                    puts rest_denominations
-                    possibilities += changePossibilities(remaining, rest_denominations)
-                end
-                n += 1
+    # checking if denominations array is not empty
+    if denominations.nil? or denominations.empty?
+        return possibilities
+    end
+    # sorting the denominations array by descending order
+    denominations = denominations.sort.reverse
+    # setting the initial value of the remaining denominations array
+    rest_denominations = denominations
+    #looping through denominations array
+    denominations.each do |coin|
+        n = 1
+        rest_denominations = rest_denominations.drop(1)
+        while coin.to_i * n <= amount and coin.to_i * n != 0
+            # counting +1 possibility if an item from denominations array multiplied N times is equal to the amount
+            if coin.to_i * n == amount
+                possibilities += 1
+            else
+                remaining = amount - coin.to_i * n
+                possibilities += changePossibilities(remaining, rest_denominations)
             end
-            i += 1
+            n += 1
         end
     end
-    puts possibilities
+    return possibilities 
 end
 changePossibilities(amount,denominations)
